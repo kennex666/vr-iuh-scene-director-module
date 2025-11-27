@@ -1,4 +1,6 @@
-class TabMessenger {
+import { toastMessage } from "../ui/toast.js";
+
+export class TabMessenger {
 	constructor(role, targetWindow = null, targetOrigin = "*") {
 		this.role = role;
 		this.targetWindow = targetWindow;
@@ -20,21 +22,18 @@ class TabMessenger {
 	}
 
 	backToParent() {
-        if (window.opener && !window.opener.closed) {
-            window.close();
-        } else {
-            console.warn("Parent closed or unavailable");
-        }
-        console.log("Back to parent window");
+		if (window.opener && !window.opener.closed) {
+			window.close();
+		} else {
+			console.warn("Parent closed or unavailable");
+		}
+		console.log("Back to parent window");
 	}
 
 	send(type, payload) {
 		try {
 			if (this.role === "admin" && this.targetWindow) {
-				this.targetWindow.postMessage(
-					{ type, payload },
-					this.targetOrigin
-				);
+				this.targetWindow.postMessage({ type, payload }, this.targetOrigin);
 			} else if (this.role === "scene" && window.opener) {
 				window.opener.postMessage({ type, payload }, this.targetOrigin);
 			} else {
@@ -45,11 +44,7 @@ class TabMessenger {
 				);
 			}
 		} catch (err) {
-			toastMessage(
-				"Không thể kết nối đến admin, hãy đóng tab này và mở lại bằng giao diện admin",
-				"error",
-				4000
-			);
+			toastMessage("Không thể kết nối đến admin, hãy đóng tab này và mở lại bằng giao diện admin", "error", 4000);
 		}
 	}
 

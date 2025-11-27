@@ -3,9 +3,8 @@
  * @param {number} length - Length of the random string (default is 6)
  * @returns {string} - Generated random string
  */
-const randomString = (length = 6) => {
-	const chars =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+export const randomString = (length = 6) => {
+	const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	let result = "";
 	for (let i = 0; i < length; i++) {
 		result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -20,6 +19,6 @@ const randomString = (length = 6) => {
  * @example
  * convertXYZToString({ x: 1, y: 2, z: 3 }); // returns "1 2 3"
  */
-const convertXYZToString = ({ x, y, z }) => {
+export const convertXYZToString = ({ x, y, z }) => {
 	return `${x} ${y} ${z}`;
 };

@@ -23,15 +23,15 @@ body {
 
 /* define color attribute */
 :root {
-    --color-primary: #262261;
-    --color-secondary: #E51C24;
+    --color-primary: #21409A;
+    --color-secondary: #FDB924;
     --color-tertiary: #ACB3B9;
     --color-quaternary: #FFFFFF;
     --color-quinary: #000000;
 
-    --color-primary-light: #5b5981;
+    --color-primary-light: #21409A;
     /* Nhạt hơn màu chính */
-    --color-secondary-light: #f46a6d;
+    --color-secondary-light: #FDB924;
     /* Nhạt hơn màu phụ */
     --color-tertiary-light: #d7dbdf;
     /* Nhạt hơn màu thứ ba */

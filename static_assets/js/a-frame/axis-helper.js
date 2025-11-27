@@ -1,21 +1,23 @@
+import { randomString } from "../utils/string.js";
+import { createMarkPoint, createSpot } from "./hotspots-components.js";
+
 /**
  * Create an axis entity for the hotspot
  * @param {Object} spot - The hotspot data
  * @returns {HTMLElement} The created axis entity
  */
-const createAxisEntity = (spot) => {
+export const createAxisEntity = (spot) => {
 	const axisHelper = document.createElement("a-entity");
 	axisHelper.id = `axis-entity-${randomString(12)}-${Date.now()}`;
 
-	axisHelper.setAttribute("location-id", spot.id || "unknown-spot-id");
-	axisHelper.setAttribute("location-type", spot.type || "unknown-spot-type");
+	const type = spot.isPlugin ? "plugin" : "location";
+
+	axisHelper.setAttribute(type + "-id", spot.id || "unknown");
+	axisHelper.setAttribute(type + "-type", spot.type || "unknown");
 
 	switch (spot.type) {
 		case "goAHead":
 			axisHelper.appendChild(createSpot(spot));
-			break;
-		case "highLight":
-			axisHelper.appendChild(createLHighlightSpots(spot));
 			break;
 		case "markPoint":
 			axisHelper.appendChild(createMarkPoint(spot));
@@ -38,29 +40,20 @@ const createAxisEntity = (spot) => {
 	return axisHelper;
 };
 
-function createAxis({ id, rotation, axis, color }) {
+export function createAxis({ id, rotation, axis, color }) {
 	const axisEntity = document.createElement("a-entity");
-	axisEntity.setAttribute(
-		"handle-drag-and-drop",
-		`axis: ${axis}; targetEl: #${id}`
-	);
+	axisEntity.setAttribute("handle-drag-and-drop", `axis: ${axis}; targetEl: #${id}`);
 	axisEntity.setAttribute("class", "axis");
 	axisEntity.setAttribute("rotation", rotation);
 
 	const shaft = document.createElement("a-entity");
-	shaft.setAttribute(
-		"geometry",
-		"primitive: cylinder; radius: 0.005; height: 1.2"
-	);
+	shaft.setAttribute("geometry", "primitive: cylinder; radius: 0.005; height: 1.2");
 	shaft.setAttribute("position", "0 0.6 0");
 	shaft.setAttribute("material", `color: ${color}`);
 	shaft.setAttribute("class", "axis");
 
 	const head = document.createElement("a-entity");
-	head.setAttribute(
-		"geometry",
-		"primitive: cone; radiusBottom: 0.06; height: 0.2"
-	);
+	head.setAttribute("geometry", "primitive: cone; radiusBottom: 0.06; height: 0.2");
 	head.setAttribute("position", "0 1.3 0");
 	head.setAttribute("material", `color: ${color}`);
 	head.setAttribute("class", "axis");
@@ -76,7 +69,7 @@ function createAxis({ id, rotation, axis, color }) {
  * @param {string} id - id của entity (mặc định "targetBox")
  * @param {string} position - vị trí (mặc định "0 1.25 -3")
  */
-function createAxisHelper(id = "targetBox", position = "0 1.25 -3") {
+export function createAxisHelper(id = "targetBox", position = "0 1.25 -3") {
 	const container = document.getElementById(id);
 	if (!container) {
 		console.error(`Element with id "${id}" not found.`);
@@ -123,62 +116,3 @@ function createAxisHelper(id = "targetBox", position = "0 1.25 -3") {
 
 	return true;
 }
-AFRAME.registerComponent("axis-helper", {
-	init: function () {
-		const el = this.el;
-		createAxisHelper(el.id);
-		this.isSelected = false;
-	},
-});
-AFRAME.registerComponent("axis-selector", {
-	init: function () {
-		const el = this.el;
-		const parent = el.parentElement;
-
-		el.addEventListener("click", (event) => {
-			console.log("Click axis selector");
-			const groupAxis = parent.querySelector(".axis-helper");
-			console.log("Group axis:", el);
-			if (groupAxis) {
-				const isVisible = !groupAxis.getAttribute("visible");
-				groupAxis.setAttribute("visible", isVisible);
-				const axes = groupAxis.querySelectorAll(".axis");
-				if (isVisible) {
-					if (window.__selectTargetId) {
-						const oldTarget = window.__selectTargetId;
-						const oldAxes = oldTarget.querySelectorAll(".axis");
-						oldAxes.forEach((axis) => {
-							axis.classList.toggle("clickable", false);
-						});
-						setTimeout(() => {
-							oldTarget.setAttribute("visible", false);
-						}, 0);
-					}
-
-					window.__selectTargetId = groupAxis;
-					axes.forEach((axis) => {
-						axis.classList.toggle("clickable", true);
-					});
-					openCustomValuePop();
-					setCustomObjectTab(parent.id, {
-						posX: parent.getAttribute("position").x,
-						posY: parent.getAttribute("position").y,
-						posZ: parent.getAttribute("position").z,
-						rotX: parent.getAttribute("rotation").x,
-						rotY: parent.getAttribute("rotation").y,
-						rotZ: parent.getAttribute("rotation").z,
-						scaleX: parent.getAttribute("scale").x,
-						scaleY: parent.getAttribute("scale").y,
-						scaleZ: parent.getAttribute("scale").z,
-					});
-				} else {
-					// remove class clickable cho cac axis
-					window.__selectTargetId = null;
-					axes.forEach((axis) => {
-						axis.classList.toggle("clickable", false);
-					});
-				}
-			}
-		});
-	},
-});

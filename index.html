@@ -1,285 +1,341 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>VR Tour | Đại học Công nghiệp TP. Hồ Chí Minh</title>
-  <meta name="description" content="Test AR">
-  <meta name="author" content="Industrial University of Ho Chi Minh city">
-  <!-- <meta name="author" content="IUH x @Kennex666 x @EchhOpp"> -->
-  <!-- <meta http-equiv="Cache-Control" content="max-age=604800"> -->
+	<head>
+		<meta charset="utf-8" />
+		<title>VR Tour | Đại học Công nghiệp TP. Hồ Chí Minh</title>
+		<meta name="description" content="Test AR" />
+		<meta name="author" content="Industrial University of Ho Chi Minh city" />
+		<!-- <meta name="author" content="IUH x @Kennex666 x @EchhOpp"> -->
+		<!-- <meta http-equiv="Cache-Control" content="max-age=604800"> -->
 
-  <script src="https://cdn.tailwindcss.com/"></script>
-  <link rel="stylesheet" href="./static_assets/css/style_main.css">
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css">
-  
-  <!-- <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script> -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script> 
+		<link rel="stylesheet" href="./static_assets/css/style_main.css" />
+		<link
+			rel="stylesheet"
+			type="text/css"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.0/css/all.min.css"
+		/>
 
-  <script src="https://unpkg.com/aframe-particle-system-component@1.1.0/dist/aframe-particle-system-component.min.js"></script>
-  <script src="https://unpkg.com/aframe-animation-component@^5.0.0/dist/aframe-animation-component.min.js"></script>
-  <script src="https://unpkg.com/aframe-look-at-component@1.0.0/dist/aframe-look-at-component.min.js"></script>
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+		<!-- <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script> -->
 
-  <script src="./app_info.js"></script>
+		<script src="./static_assets/js/libs//aframe/aframe-1.4.2.min.js"></script>
+		<script type="module" src="./static_assets/js/index.js"></script>
 
-  <!-- <script src="./dist/bundle.js"></script> -->
-  <script src="./static_assets/js/index.js"></script>
+		<!-- favico -->
+		<link rel="icon" href="./favicon.ico" type="image/x-icon" />
+		<link rel="shortcut icon" href="./favicon.ico" type="image/x-icon" />
+		<link rel="apple-touch-icon" sizes="180x180" href="./favicon.ico" />
+		<link rel="icon" type="image/png" sizes="32x32" href="./favicon.ico" />
 
-  <script src="./static_assets/js/a-frame/camera.js"></script>
-  <script src="./static_assets/js/a-frame/drop-drag.js"></script>
-  <script src="./static_assets/js/a-frame/axis-helper.js"></script>
-  <script src="./static_assets/js/a-frame/hotspots-components.js"></script>
-  
-  <script src="./static_assets/js/utils/js-canvas-textpreview.js"></script>
-  <script src="./static_assets/js/utils/string.js"></script>
-  <script src="./static_assets/js/utils/TabMessenger.js"></script>
-  <script src="./static_assets/js/utils/hotspots.js"></script>
+		<!-- PWA Meta for cross-platform support -->
+		<link rel="manifest" href="./manifest.json" />
+		<meta name="theme-color" content="#ffffff" />
 
-  <script src="./static_assets/js/instances/tab-message-handler.js"></script>
-  <script src="./static_assets/js/events/hotspots.js"></script>
-  <script src="./static_assets/js/events/keyboard.js"></script>
+		<!-- iOS -->
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<meta name="apple-mobile-web-app-title" content="VR Tour IUH" />
+		<link rel="apple-touch-icon" href="./static_assets/logo/iuh-app.jpg" />
+		<link rel="apple-touch-startup-image" href="./static_assets/logo/iuh-app.jpg" />
 
-  <script src="./static_assets/js/ui/sidebar.js"></script>
-  <script src="./static_assets/js/ui/popup-coordinate.js"></script>
-  <script src="./static_assets/js/ui/scene.js"></script>
+		<!-- Windows -->
+		<meta name="application-name" content="VR Tour IUH" />
+		<meta name="msapplication-TileImage" content="./static_assets/logo/iuh-app.jpg" />
+		<meta name="msapplication-TileColor" content="#ffffff" />
+		<meta name="msapplication-navbutton-color" content="#ffffff" />
+		<meta name="msapplication-tooltip" content="VR Tour IUH" />
+		<meta name="msapplication-starturl" content="./index.html" />
+		<meta name="msapplication-tap-highlight" content="no" />
+	</head>
+	<body class="relative">
+		<!-- Info target -->
+		<div
+			id="target-info"
+			class="hidden absolute z-[30] bg-[--color-primary] py-2 px-4 text-white text-center gap-2 flex flex-col opacity-90"
+			style="pointer-events: none"
+		>
+			<img src="" class="w-32 h-20 md:w-64 md:h-36 object-cover" />
+			<p class="uppercase font-bold text-xs md:text-sm"></p>
+		</div>
 
+		<a-scene real-world-meshing background="color: #ECECEC" id="scene360">
+			<div id="assetsManagerLazy"></div>
+			<a-assets id="assetsManager">
+				<img id="hotspot" src="./static_assets/img/go.png" />
+			</a-assets>
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js/minified/introjs.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/intro.js/minified/intro.min.js"></script>
+			<a-entity id="spots" hotspots></a-entity>
 
-  <!-- favico -->
-  <link rel="icon" href="./favicon.ico" type="image/x-icon">
-  <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon" sizes="180x180" href="./favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="./favicon.ico">
+			<!-- This is main scene -->
+			<a-sky location-sky id="skybox" src="#Cs1-Sky-1224" position="0 0 0" rotation="0 0 0"></a-sky>
 
-  <!-- PWA Meta for cross-platform support -->
-  <link rel="manifest" href="./manifest.json">
-  <meta name="theme-color" content="#ffffff">
+			<!-- Camera - Crosshair: Purpose - use for zoom in & zoom out / movement -->
+			<a-entity
+				id="cam"
+				raycaster="objects: .clickable"
+				cursor="rayOrigin: mouse; fuse: false"
+				camera="zoom: 1"
+				position="0 0 0"
+				rotation="0 90 0"
+				custom-look
+				look-controls="enabled: true; reverseMouseDrag: true;"
+			></a-entity>
+		</a-scene>
+	</body>
 
-  <!-- iOS -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="VR Tour IUH">
-  <link rel="apple-touch-icon" href="./static_assets/logo/iuh-app.jpg">
-  <link rel="apple-touch-startup-image" href="./static_assets/logo/iuh-app.jpg">
+	<div class="currentLocation px-2 y-1">
+		<p class="text-white">
+			Bạn đang ở
+			<span class="" id="currentLocation">Loading</span>
+		</p>
+	</div>
 
-  <!-- Windows -->
-  <meta name="application-name" content="VR Tour IUH">
-  <meta name="msapplication-TileImage" content="./static_assets/logo/iuh-app.jpg">
-  <meta name="msapplication-TileColor" content="#ffffff">
-  <meta name="msapplication-navbutton-color" content="#ffffff">
-  <meta name="msapplication-tooltip" content="VR Tour IUH">
-  <meta name="msapplication-starturl" content="./index.html">
-  <meta name="msapplication-tap-highlight" content="no">
+	<!-- Create a popup menu for additional options -->
+	<div
+		class="fixed bottom-16 right-4 bg-[--color-primary] text-white p-4 rounded-lg shadow-lg z-40 hidden"
+		id="popup-custom-value"
+	>
+		<div class="popup-content">
+			<h3 class="uppercase text-center font-bold">Chỉnh sửa</h3>
+			<div>
+				<select class="w-full text-black mt-4" id="pop-cus-val-select" disabled>
+					<option value="" disabled selected>Dịch chuyển đến</option>
+				</select>
+				<div>
+					Loại hotspot:
+					<select class="text-black mt-4" id="pop-cus-val-type-hotspot-select">
+						<option value="goAHead" selected>Điểm chỉ đường</option>
+						<option value="markPoint">Điểm nhấp nháy</option>
+					</select>
+				</div>
+			</div>
+			<div class="tab-content mt-4">
+				<div class="flex flex-col gap-1" tab="position">
+					<div>
+						<label class="mr-2" for="posX">X:</label>
+						<input type="number" data-input="posX" class="text-black" step="0.1" />
+					</div>
+					<div>
+						<label class="mr-2" for="posY">Y:</label>
+						<input type="number" data-input="posY" class="text-black" step="0.1" />
+					</div>
+					<div>
+						<label class="mr-2" for="posZ">Z:</label>
+						<input type="number" data-input="posZ" class="text-black" step="0.1" />
+					</div>
+				</div>
+				<div class="flex flex-col gap-1 hidden" tab="rotation">
+					<div>
+						<label class="mr-2" for="rotX">X:</label>
+						<input type="number" data-input="rotX" class="text-black" step="1" />
+					</div>
+					<div>
+						<label class="mr-2" for="rotY">Y:</label>
+						<input type="number" data-input="rotY" class="text-black" step="1" />
+					</div>
+					<div>
+						<label class="mr-2" for="rotZ">Z:</label>
+						<input type="number" data-input="rotZ" class="text-black" step="1" />
+					</div>
+				</div>
+				<div class="flex flex-col gap-1 hidden" tab="scale">
+					<div>
+						<label class="mr-2" for="scaleX">X:</label>
+						<input type="number" data-input="scaleX" class="text-black" step="0.1" value="1" />
+					</div>
+					<div>
+						<label class="mr-2" for="scaleY">Y:</label>
+						<input type="number" data-input="scaleY" class="text-black" step="0.1" value="1" />
+					</div>
+					<div>
+						<label class="mr-2" for="scaleZ">Z:</label>
+						<input type="number" data-input="scaleZ" class="text-black" step="0.1" value="1" />
+					</div>
+				</div>
+			</div>
+			<!-- Create x,y,z input (postion) and rotation xyz (divided 2 tabs) -->
+			<div class="grid grid-cols-3 mt-4 gap-2">
+				<button
+					class="px-2 py-1 border-white border text-white rounded hover:bg-white/30 bg-white/30"
+					data-tab="position"
+				>
+					Vị trí
+				</button>
+				<button class="px-2 py-1 border-white border text-white rounded hover:bg-white/30" data-tab="rotation">
+					Xoay
+				</button>
+				<button class="px-2 py-1 border-white border text-white rounded hover:bg-white/30" data-tab="scale">
+					Kích thước
+				</button>
+			</div>
+			<div class="grid">
+				<button
+					data-tab="close"
+					class="bg-[--color-secondary] text-white px-4 py-2 rounded mt-4 hover:opacity-90"
+				>
+					Đóng
+				</button>
+			</div>
+		</div>
+	</div>
 
-</head>
- <body class="relative">
-  <!-- Info target -->
-    <div id="target-info" class="hidden absolute z-[30] bg-[--color-primary] py-2 px-4 text-white text-center gap-2 flex flex-col opacity-90" style="pointer-events: none;">
-      <img src="" class="w-32 h-20 md:w-64 md:h-36 object-cover">
-      <p class="uppercase font-bold text-xs md:text-sm"></p>
-    </div>
-      
-    <a-scene real-world-meshing background="color: #ECECEC" id="scene360">
-      <div id="assetsManagerLazy"></div>
-      <a-assets id="assetsManager">
-        <img id="hotspot" src="./static_assets/img/go.png"/>
- 
-      </a-assets>
-
-
-      <a-entity id="spots" hotspots>
-      </a-entity>
-      
-      <!-- This is main scene -->
-      <a-sky location-sky id="skybox" 
-              src="#Cs1-Sky-1224"
-              position="0 0 0"
-              rotation="0 0 0"
-      ></a-sky>
-
-      <!-- Camera - Crosshair: Purpose - use for zoom in & zoom out / movement -->
-      <a-entity
-        id="cam"
-        raycaster="objects: .clickable"
-        cursor="rayOrigin: mouse; fuse: false"
-        camera="zoom: 1"
-        position="0 0 0"
-        rotation="0 90 0"
-        custom-look
-        look-controls="enabled: true; reverseMouseDrag: true;"
-      ></a-entity>
-
-    </a-scene>
-  </body>
-  
-  <div class="currentLocation px-2 y-1">
-    <p class="text-white">Bạn đang ở <span class="" id="currentLocation">Loading</span></p>
-  </div>
-
-  
-
-  <!-- Create a popup menu for additional options -->
-  <div class="fixed bottom-16 right-4 bg-[--color-primary] text-white p-4 rounded-lg shadow-lg z-40 hidden" id="popup-custom-value">
-    <div class="popup-content">
-      <h3 class="uppercase text-center font-bold">Chỉnh sửa</h3>
-        <div>
-            <select class="w-full text-black mt-4" id="pop-cus-val-select" disabled>
-            <option value="" disabled selected>Dịch chuyển đến</option>
-        </select>
-        <div>
-            Loại hotspot:
-            <select class="text-black mt-4" id="pop-cus-val-type-hotspot-select" >
-                <option value="goAHead" selected>Điểm chỉ đường</option>
-                <option value="markPoint">Điểm nhấp nháy</option>
-            </select>
-        </div>
-      </div>
-      <div class="tab-content mt-4">
-        <div class="flex flex-col gap-1" tab="position">
-          <div><label class="mr-2" for="posX">X:</label>
-          <input type="number" data-input="posX" class="text-black" step="0.1"></div>
-          <div><label class="mr-2" for="posY">Y:</label>
-          <input type="number" data-input="posY" class="text-black" step="0.1"></div>
-          <div><label class="mr-2" for="posZ">Z:</label>
-          <input type="number" data-input="posZ" class="text-black" step="0.1"></div>
-        </div>
-        <div class="flex flex-col gap-1 hidden" tab="rotation">
-          <div><label class="mr-2" for="rotX">X:</label>
-          <input type="number" data-input="rotX" class="text-black" step="1"></div>
-          <div><label class="mr-2" for="rotY">Y:</label>
-          <input type="number" data-input="rotY" class="text-black" step="1"></div>
-          <div><label class="mr-2" for="rotZ">Z:</label>
-          <input type="number" data-input="rotZ" class="text-black" step="1"></div>
-        </div>
-        <div class="flex flex-col gap-1 hidden" tab="scale">
-          <div><label class="mr-2" for="scaleX">X:</label>
-          <input type="number" data-input="scaleX" class="text-black" step="0.1" value="1"></div>
-          <div><label class="mr-2" for="scaleY">Y:</label>
-          <input type="number" data-input="scaleY" class="text-black" step="0.1" value="1"></div>
-          <div><label class="mr-2" for="scaleZ">Z:</label>
-          <input type="number" data-input="scaleZ" class="text-black" step="0.1" value="1"></div>
-        </div>
-      </div>
-      <!-- Create x,y,z input (postion) and rotation xyz (divided 2 tabs) -->
-      <div class="grid grid-cols-3 mt-4 gap-2">
-        <button class="px-2 py-1 border-white border text-white rounded hover:bg-white/30 bg-white/30" data-tab="position">Vị trí</button>
-        <button class="px-2 py-1 border-white border text-white rounded hover:bg-white/30" data-tab="rotation">Xoay</button>
-        <button class="px-2 py-1 border-white border text-white rounded hover:bg-white/30" data-tab="scale">Kích thước</button>
-      </div>
-      <div class="grid">
-        <button data-tab="close" class="bg-[--color-primary-light] text-white px-4 py-2 rounded mt-4 hover:bg-[--color-primary-light] hover:opacity-90">Đóng</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Create side menu -->
-  <div class="fixed top-0 left-0 h-full w-[18vw] bg-[--color-primary] text-white p-4 shadow-lg z-40 transition-transform duration-300" id="side-menu">
-    <div class="text-right mb-4 w-full">
-        <button class="w-full text-white hover:text-gray-300 border border-white rounded-md px-3 py-1" id="back-parent-btn" title="Quay lại admin">
-            Quay lại admin (ALT + Q)
-        </button>
-    </div>
-    <div class="mb-6 border-y border-white py-2">
-        <h2 class="font-semibold text-center" id="current-location-title">Unknown</h2>
-    </div>
-    <ul class="space-y-2 overflow-y-auto h-[70vh]" id="location-list">
-      <!-- Locations will be dynamically added here -->
-      <!-- <li>
+	<!-- Create side menu -->
+	<div
+		class="fixed top-0 left-0 h-full w-[18vw] bg-[--color-primary] text-white p-4 shadow-lg z-40 transition-transform duration-300"
+		id="side-menu"
+	>
+		<div class="text-right mb-4 w-full">
+			<button
+				class="w-full text-white hover:text-gray-300 border border-white rounded-md px-3 py-1"
+				id="back-parent-btn"
+				title="Quay lại admin"
+			>
+				Quay lại admin (ALT + Q)
+			</button>
+		</div>
+		<div class="mb-6 border-y border-white py-2">
+			<h2 class="font-semibold text-center" id="current-location-title">Unknown</h2>
+		</div>
+		<ul class="space-y-2 overflow-y-auto h-[70vh]" id="location-list">
+			<!-- Locations will be dynamically added here -->
+			<!-- <li>
         <button class="w-full text-left px-2 py-1 rounded hover:bg-white/30 relative" data-location-id="Cs1-Sky-1224" onclick="">
           <img src="./static_assets/img/360/Cs1-E7-0425.jpg" alt="Trụ sở chính" class="w-full h-28 object-cover inline-block">
           <div class="bottom-1 absolute px-2 py-1 bg-[--color-primary] text-sm">Trụ sở chính</div>
         </button>
       </li> -->
-      <!-- If no have hotspot-->
-       <li>
-        <p class="text-center text-white">Chưa có địa điểm nào tại hotspot. Vui lòng quay lại quản lý kịch bản để thêm địa điểm.</p>
-       </li>
-    </ul>
-    <button class="mt-4 w-full bg-[--color-primary-light] text-white px-4 py-2 rounded hover:bg-[--color-primary-light] hover:opacity-90" id="close-side-menu">Đóng</button>
-  </div>
+			<!-- If no have hotspot-->
+			<li>
+				<p class="text-center text-white">
+					Chưa có địa điểm nào tại hotspot. Vui lòng quay lại quản lý kịch bản để thêm địa điểm.
+				</p>
+			</li>
+		</ul>
+		<button
+			class="mt-4 w-full bg-[--color-secondary] text-white px-4 py-2 rounded hover:opacity-90"
+			id="close-side-menu"
+		>
+			Đóng
+		</button>
+	</div>
 
-    <!-- Menu buttom bar -->
-  <div class="menu-bottom flex flex-row items-center justify-between px-4 py-1 md:px-6 md:py-2 bg-[--color-primary] opacity-80 text-xs md:text" id="menu-bottom">
-    <!-- group button 1 -->
-    <div class="flex flex-row items-center gap-3">
-      <!-- <button class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]" data-controller="backFunction" onclick="controllMenu(this)" title="Quay lại điểm trước">
+	<!-- Menu buttom bar -->
+	<div
+		class="menu-bottom flex flex-row items-center justify-between px-4 py-1 md:px-6 md:py-2 bg-[--color-primary] opacity-80 text-xs md:text"
+		id="menu-bottom"
+	>
+		<!-- group button 1 -->
+		<div class="flex flex-row items-center gap-3">
+			<!-- <button class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]" data-controller="backFunction" onclick="controllMenu(this)" title="Quay lại điểm trước">
         <i class="fa-solid fa-angles-left"></i>
       </button> -->
-      <!-- <button class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]" data-controller="closeAllMenu" onclick="controllMenu(this)" title="Đóng các Menu">
+			<!-- <button class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]" data-controller="closeAllMenu" onclick="controllMenu(this)" title="Đóng các Menu">
         <i class="fa-solid fa-x"></i>
       </button> -->
-      <button data-intro="Mở menu truy cập nhanh các địa điểm" data-step="1" class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]" data-controller="openMenuLeft" onclick="controllMenu(this)" title="Mở bảng điều hướng">
-        <i class="fa-solid fa-bars"></i>
-      </button>
-    </div>
+			<button
+				data-intro="Mở menu truy cập nhanh các địa điểm"
+				data-step="1"
+				class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]"
+				data-controller="openMenuLeft"
+				onclick="controllMenu(this)"
+				title="Mở bảng điều hướng"
+			>
+				<i class="fa-solid fa-bars"></i>
+			</button>
+		</div>
 
-    <!-- group button 2 -->
-    <div class="flex flex-row items-center gap-3 relative">
-      <div class="relative">
-        <!-- Nút add -->
-        <!-- <button 
+		<!-- group button 2 -->
+		<div class="flex flex-row items-center gap-3 relative">
+			<div class="relative">
+				<!-- Nút add -->
+				<!-- <button 
           class="btn-add-location w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]" 
           title="Thêm điểm di chuyển">
           <i class="fa-solid fa-add"></i>
         </button> -->
-      
-        <!-- Nhóm 3 nút con -->
-        <div class="submenu absolute bottom-full left-1/2 -translate-x-1/2 translate-y-[-15%] flex flex-col items-center gap-2 hidden bg-[--color-primary] p-2 rounded-lg shadow-lg">
-          <button class="sub-btn w-8 h-8 border-2 border-white rounded-full text-[--color-quaternary] 
-                         hover:border-[--color-secondary-light] hover:[--color-tertiary-light] flex items-center justify-center" 
-            data-controller="addHotspot" 
-            data-controller-attribute="markPoint"
-            onclick="controllMenu(this)"
-            title="Thêm điểm đánh dấu">
-            <i class="fa-solid fa-location-dot"></i>
-          </button>
-      
-          <button class="sub-btn w-8 h-8 border-2 border-white rounded-full text-[--color-quaternary] 
-                         hover:border-[--color-secondary-light] hover:[--color-tertiary-light] flex items-center justify-center" 
-            data-controller="addHotspot" 
-            data-controller-attribute="goAHead"
-            onclick="controllMenu(this)"
-            title="Thêm điểm di chuyển">
-            <i class="fa-solid fa-arrows-up-down-left-right"></i>
-          </button>
-      
-          <button class="sub-btn w-8 h-8 border-2 border-white rounded-full text-[--color-quaternary] 
-                         hover:border-[--color-secondary-light] hover:[--color-tertiary-light] flex items-center justify-center" 
-            data-controller="addHotspot"
-            data-controller-attribute="highLight"
-            onclick="controllMenu(this)"
-            title="Thêm điểm thông tin">
-            <i class="fa-solid fa-circle-info"></i>
-          </button>
 
-        </div>
-      </div>
-      
+				<!-- Nhóm 3 nút con -->
+				<div
+					class="submenu absolute bottom-full left-1/2 -translate-x-1/2 translate-y-[-15%] flex flex-col items-center gap-2 hidden bg-[--color-primary] p-2 rounded-lg shadow-lg"
+				>
+					<button
+						class="sub-btn w-8 h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light] flex items-center justify-center"
+						data-controller="addHotspot"
+						data-controller-attribute="markPoint"
+						onclick="controllMenu(this)"
+						title="Thêm điểm đánh dấu"
+					>
+						<i class="fa-solid fa-location-dot"></i>
+					</button>
 
-      <button class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]" data-controller-attribute="generalinfo-dialog" data-controller="toggleCustomValuePopup" onclick="controllMenu(this)" title="Thông số tuỳ chỉnh">
-        <i class="fa-solid fa-pencil"></i>
-      </button>
+					<button
+						class="sub-btn w-8 h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light] flex items-center justify-center"
+						data-controller="addHotspot"
+						data-controller-attribute="goAHead"
+						onclick="controllMenu(this)"
+						title="Thêm điểm di chuyển"
+					>
+						<i class="fa-solid fa-arrows-up-down-left-right"></i>
+					</button>
 
-      <button class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]" data-controller-attribute="" data-controller="setFavorite" onclick="controllMenu(this)" title="Đặt làm vị trí mặc định">
-        <i class="fa-solid fa-star"></i>
-      </button>
+					<button
+						class="sub-btn w-8 h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light] flex items-center justify-center"
+						data-controller="addHotspot"
+						data-controller-attribute="highLight"
+						onclick="controllMenu(this)"
+						title="Thêm điểm thông tin"
+					>
+						<i class="fa-solid fa-circle-info"></i>
+					</button>
+				</div>
+			</div>
 
-      <!-- Save -->
-      <button class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]" data-controller-attribute="" data-controller="saveCurrentScene" onclick="controllMenu(this)" title="Lưu thay đổi">
-        <i class="fa-solid fa-floppy-disk"></i>
-      </button>
-    </div>
+			<button
+				class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]"
+				data-controller-attribute="generalinfo-dialog"
+				data-controller="toggleCustomValuePopup"
+				onclick="controllMenu(this)"
+				title="Thông số tuỳ chỉnh"
+			>
+				<i class="fa-solid fa-pencil"></i>
+			</button>
 
-    <!-- group button 3 -->
-    <div class="flex flex-row items-center gap-3">
-      <button data-intro="Bật/tắt toàn màn hình" data-step="10" class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]" data-controller="fullScreen" onclick="controllMenu(this)" title="Full màn hình">
-        <i class="fa-solid fa-expand"></i>
-      </button>
-      <!-- <button class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]" data-controller="goAHead" onclick="controllMenu(this)" title="Đi đến điểm kế tiếp">
+			<button
+				class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]"
+				data-controller-attribute=""
+				data-controller="setFavorite"
+				onclick="controllMenu(this)"
+				title="Đặt làm vị trí mặc định"
+			>
+				<i class="fa-solid fa-star"></i>
+			</button>
+
+			<!-- Save -->
+			<button
+				class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]"
+				data-controller-attribute=""
+				data-controller="saveCurrentScene"
+				onclick="controllMenu(this)"
+				title="Lưu thay đổi"
+			>
+				<i class="fa-solid fa-floppy-disk"></i>
+			</button>
+		</div>
+
+		<!-- group button 3 -->
+		<div class="flex flex-row items-center gap-3">
+			<button
+				data-intro="Bật/tắt toàn màn hình"
+				data-step="10"
+				class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]"
+				data-controller="fullScreen"
+				onclick="controllMenu(this)"
+				title="Full màn hình"
+			>
+				<i class="fa-solid fa-expand"></i>
+			</button>
+			<!-- <button class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]" data-controller="goAHead" onclick="controllMenu(this)" title="Đi đến điểm kế tiếp">
         <i class="fa-solid fa-angles-right"></i>
       </button> -->
-    </div>
-  </div>
+		</div>
+	</div>
 </html>

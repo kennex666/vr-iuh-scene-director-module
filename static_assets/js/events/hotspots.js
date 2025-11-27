@@ -1,3 +1,6 @@
+import { createAxisEntity } from "../a-frame/axis-helper.js";
+import { findHotspot } from "../utils/hotspots.js";
+
 /*
     Event listener for adding a new hotspot
 */

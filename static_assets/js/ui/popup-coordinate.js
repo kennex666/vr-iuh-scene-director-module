@@ -1,7 +1,9 @@
+import { changeTypeHotspot } from "../utils/hotspots.js";
+
 /**
  * Open popup custom value
  */
-const openCustomValuePop = () => {
+export const openCustomValuePop = () => {
 	const popup = document.querySelector("#popup-custom-value");
 	popup.classList.toggle("hidden", false);
 };
@@ -10,18 +12,16 @@ const openCustomValuePop = () => {
  * Select the location in the popup select
  * @param {string} objId - The object id to select location for
  */
-const selectLocationTab = (objId) => {
+export const selectLocationTab = (objId) => {
 	const id = document.querySelector(`#${objId}`).getAttribute("location-id");
 	const type = document.querySelector(`#${objId}`).getAttribute("location-type");
 	if (!id) {
 		console.warn("No current object selected.");
 		return;
 	}
-	
+
 	const selectLocationEl = document.querySelector("#pop-cus-val-select");
-	const selectLocationTypeEl = document.querySelector(
-		"#pop-cus-val-type-hotspot-select"
-	);
+	const selectLocationTypeEl = document.querySelector("#pop-cus-val-type-hotspot-select");
 	// check if there is no data options in select
 	const option = selectLocationEl.querySelector(`option[value="${id}"]`);
 	if (!option) {
@@ -34,8 +34,8 @@ const selectLocationTab = (objId) => {
 		option.selected = true;
 	}
 
-    if (type && selectLocationTypeEl) {
-        const optionType = selectLocationTypeEl.querySelector(`option[value="${type}"]`);
+	if (type && selectLocationTypeEl) {
+		const optionType = selectLocationTypeEl.querySelector(`option[value="${type}"]`);
 		if (!optionType) {
 			const option = document.createElement("option");
 			option.value = type;
@@ -46,14 +46,14 @@ const selectLocationTab = (objId) => {
 			optionType.selected = true;
 		}
 	}
-}
+};
 
 /**
  * Set the custom object tab values
- * @param {string} id 
+ * @param {string} id
  * @param {Object} param1 - The custom object values
  */
-const setCustomObjectTab = (id, { posX, posY, posZ, rotX, rotY, rotZ, scaleX, scaleY, scaleZ }) => {
+export const setCustomObjectTab = (id, { posX, posY, posZ, rotX, rotY, rotZ, scaleX, scaleY, scaleZ }) => {
 	const popup = document.querySelector("#popup-custom-value");
 	popup.setAttribute("current-object-id", id);
 	popup.querySelector("input[data-input='posX']").value = posX;
@@ -66,50 +66,43 @@ const setCustomObjectTab = (id, { posX, posY, posZ, rotX, rotY, rotZ, scaleX, sc
 	popup.querySelector("input[data-input='scaleY']").value = scaleY;
 	popup.querySelector("input[data-input='scaleZ']").value = scaleZ;
 	selectLocationTab(id);
-}
-
+};
 
 /**
  * Handle popup tab modify
  */
-const handleTabModify = () => {
+export const handleTabModify = () => {
 	const popup = document.querySelector("#popup-custom-value");
 
 	// handle chuyển tab
 	const tabButtons = popup.querySelectorAll("button[data-tab]");
 	const tabContents = popup.querySelectorAll(".tab-content [tab]");
 
-    // Listen select change 
-    const selectLocationEl = document.querySelector(
-		"#pop-cus-val-type-hotspot-select"
-	);
-    selectLocationEl.addEventListener("change", (e) => {
-        const currentObjId = popup.getAttribute("current-object-id");
-        console.log("Input changed for object:", currentObjId);
-        if (currentObjId) {
-            // Apply all attributes to the object
-            const obj = document.getElementById(currentObjId);
-            if (!obj) {
-                console.warn("Object not found:", currentObjId);
-                return;
-            }
+	// Listen select change
+	const selectLocationEl = document.querySelector("#pop-cus-val-type-hotspot-select");
+	selectLocationEl.addEventListener("change", (e) => {
+		const currentObjId = popup.getAttribute("current-object-id");
+		console.log("Input changed for object:", currentObjId);
+		if (currentObjId) {
+			// Apply all attributes to the object
+			const obj = document.getElementById(currentObjId);
+			if (!obj) {
+				console.warn("Object not found:", currentObjId);
+				return;
+			}
 
-            const oldType = obj.getAttribute("location-type");
+			const oldType = obj.getAttribute("location-type");
 
-            const locationId = obj.getAttribute("location-id");
-            if (oldType != popup.querySelector("#pop-cus-val-type-hotspot-select").value) {
-                changeTypeHotspot(
-                    locationId,
-                    popup.querySelector("#pop-cus-val-type-hotspot-select")
-                        .value
-                );
-            }
-        }
-    });
+			const locationId = obj.getAttribute("location-id");
+			if (oldType != popup.querySelector("#pop-cus-val-type-hotspot-select").value) {
+				changeTypeHotspot(locationId, popup.querySelector("#pop-cus-val-type-hotspot-select").value);
+			}
+		}
+	});
 
 	// Listen input change
 	const inputs = popup.querySelectorAll("input[data-input]");
-	inputs.forEach(input => {
+	inputs.forEach((input) => {
 		input.addEventListener("input", () => {
 			const currentObjId = popup.getAttribute("current-object-id");
 			console.log("Input changed for object:", currentObjId);
@@ -152,12 +145,12 @@ const handleTabModify = () => {
 		});
 	});
 
-	tabButtons.forEach(btn => {
+	tabButtons.forEach((btn) => {
 		btn.addEventListener("click", () => {
 			const tab = btn.getAttribute("data-tab");
 
 			if (tab === "position" || tab === "rotation" || tab === "scale") {
-				tabButtons.forEach(b => {
+				tabButtons.forEach((b) => {
 					if (b === btn) {
 						b.classList.add("bg-white/30");
 					} else {
@@ -165,7 +158,7 @@ const handleTabModify = () => {
 					}
 				});
 				// ẩn hết
-				tabContents.forEach(c => c.classList.add("hidden"));
+				tabContents.forEach((c) => c.classList.add("hidden"));
 				// hiện cái tab được chọn
 				const active = popup.querySelector(`[tab="${tab}"]`);
 				if (active) active.classList.remove("hidden");
@@ -175,7 +168,7 @@ const handleTabModify = () => {
 				// lấy input values
 				const inputs = popup.querySelectorAll("input[data-input]");
 				const values = {};
-				inputs.forEach(i => {
+				inputs.forEach((i) => {
 					values[i.dataset.input] = parseFloat(i.value) || 0;
 				});
 				console.log("Saved values:", values);
@@ -207,11 +200,7 @@ const handleTabModify = () => {
 	document.addEventListener("rotation-change", (e) => {
 		const currentObjId = popup.getAttribute("current-object-id");
 		if (currentObjId && currentObjId !== e.detail.id) {
-			console.log(
-				"Not the same object, ignore rotation-change event",
-				currentObjId,
-				e.detail.id
-			);
+			console.log("Not the same object, ignore rotation-change event", currentObjId, e.detail.id);
 			return;
 		}
 		const { x, y, z } = e.detail;
@@ -226,11 +215,7 @@ const handleTabModify = () => {
 	document.addEventListener("scale-change", (e) => {
 		const currentObjId = popup.getAttribute("current-object-id");
 		if (currentObjId && currentObjId !== e.detail.id) {
-			console.log(
-				"Not the same object, ignore scale-change event",
-				currentObjId,
-				e.detail.id
-			);
+			console.log("Not the same object, ignore scale-change event", currentObjId, e.detail.id);
 			return;
 		}
 		const { x, y, z } = e.detail;
@@ -242,11 +227,10 @@ const handleTabModify = () => {
 		if (scaleZInput) scaleZInput.value = z.toFixed(6);
 	});
 
-
 	document.getElementById("pop-cus-val-select").addEventListener("change", (e) => {
 		const selectedId = e.target.value;
 		const currentObjId = popup.getAttribute("current-object-id");
-		
+
 		if (!currentObjId) {
 			console.warn("No current object selected.");
 			return;
@@ -254,5 +238,4 @@ const handleTabModify = () => {
 		const obj = document.getElementById(currentObjId);
 		obj.setAttribute("location-id", selectedId);
 	});
-
-}
+};

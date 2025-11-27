@@ -1,8 +1,11 @@
+import { createAxisEntity } from "../a-frame/axis-helper.js";
+import { removeAllSpots } from "../utils/hotspots.js";
+
 /**
  * Load locations into the location select dropdown.
  * @param {Array} locations - Array of location objects with id and title
  */
-function loadLocations(locations) {
+export function loadLocations(locations) {
 	if (!Array.isArray(locations)) {
 		console.warn("Invalid locations data:", locations);
 		return;
@@ -35,17 +38,14 @@ function loadLocations(locations) {
  *   spots: [ { id, title, type, position, rotation }, ... ]
  * }
  */
-function loadScene(data) {
-
+export function loadScene(data) {
 	const sceneData = data || null;
 	if (!sceneData || !sceneData.id) {
 		console.warn("Invalid scene data:", sceneData);
 		return;
 	}
 
-    const currentLocationTitle = document.getElementById(
-		"current-location-title"
-	);
+	const currentLocationTitle = document.getElementById("current-location-title");
 	currentLocationTitle.textContent = sceneData.title || "Unknown Location";
 
 	currentScene = sceneData;
@@ -55,29 +55,15 @@ function loadScene(data) {
 
 	const sceneEl = document.querySelector("a-scene");
 	// Check if array
-	if (
-		sceneData.assets &&
-		sceneData.assets &&
-		Array.isArray(sceneData.assets)
-	) {
+	if (sceneData.assets && sceneData.assets && Array.isArray(sceneData.assets)) {
 		sceneData.assets = sceneData.assets[0];
 	}
-	if (
-		sceneData.assets &&
-		sceneData.assets.images &&
-		sceneData.assets.images.highQuality
-	) {
+	if (sceneData.assets && sceneData.assets.images && sceneData.assets.images.highQuality) {
 		const skyEl = sceneEl.querySelector("a-sky");
 		if (skyEl) {
 			skyEl.setAttribute("src", sceneData.assets.images.highQuality);
-			skyEl.setAttribute(
-				"rotation",
-				sceneData.rotation || { x: 0, y: 0, z: 0 }
-			);
-			console.log(
-				"Sky image updated:",
-				sceneData.assets.images.highQuality
-			);
+			skyEl.setAttribute("rotation", sceneData.rotation || { x: 0, y: 0, z: 0 });
+			console.log("Sky image updated:", sceneData.assets.images.highQuality);
 		}
 	} else {
 		console.warn("No valid sky image found in scene data.");
@@ -85,7 +71,12 @@ function loadScene(data) {
 
 	const spots = sceneData.spots || [];
 	for (let spot of spots) {
-		const aEntity = createAxisEntity(spot);
+		const aEntity = createAxisEntity({ ...spot, isPlugin: false });
+	}
+
+	const plugins = sceneData.plugins || [];
+	for (let plugin of plugins) {
+		const aEntity = createAxisEntity({ ...plugin, isPlugin: true });
 	}
 
 	console.log("Scene loaded with spots:", spots.length);
