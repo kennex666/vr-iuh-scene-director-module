@@ -21,6 +21,7 @@ import { handleTabModify } from "./ui/popup-coordinate.js";
 import { handleCloseSlideBar } from "./ui/sidebar.js";
 
 window.__hotspots = [];
+window.__plugins = [];
 
 window.currentScene = {
 	id: "scene-001",

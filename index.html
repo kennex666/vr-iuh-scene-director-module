@@ -108,6 +108,7 @@
 					</select>
 				</div>
 			</div>
+
 			<div class="tab-content mt-4">
 				<div class="flex flex-col gap-1" tab="position">
 					<div>
@@ -210,6 +211,21 @@
 				</p>
 			</li>
 		</ul>
+		<ul class="space-y-2 overflow-y-auto h-[70vh] hidden" id="plugin-list">
+			<!-- Locations will be dynamically added here -->
+			<!-- <li>
+        <button class="w-full text-left px-2 py-1 rounded hover:bg-white/30 relative" data-location-id="Cs1-Sky-1224" onclick="">
+          <img src="./static_assets/img/360/Cs1-E7-0425.jpg" alt="Trụ sở chính" class="w-full h-28 object-cover inline-block">
+          <div class="bottom-1 absolute px-2 py-1 bg-[--color-primary] text-sm">Trụ sở chính</div>
+        </button>
+      </li> -->
+			<!-- If no have hotspot-->
+			<li>
+				<p class="text-center text-white">
+					Chưa có plugin nào được thêm vào. Vui lòng quay lại quản lý địa điểm để thêm plugin.
+				</p>
+			</li>
+		</ul>
 		<button
 			class="mt-4 w-full bg-[--color-secondary] text-white px-4 py-2 rounded hover:opacity-90"
 			id="close-side-menu"
@@ -235,7 +251,7 @@
 				data-intro="Mở menu truy cập nhanh các địa điểm"
 				data-step="1"
 				class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]"
-				data-controller="openMenuLeft"
+				data-controller="openMenuLeftLocations"
 				onclick="controllMenu(this)"
 				title="Mở bảng điều hướng"
 			>
@@ -290,6 +306,17 @@
 			</div>
 
 			<button
+				data-intro="Mở menu truy cập nhanh các địa điểm"
+				data-step="1"
+				class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]"
+				data-controller="openMenuLeftPlugins"
+				onclick="controllMenu(this)"
+				title="Mở plugins menu"
+			>
+				<i class="fa-solid fa-bars"></i>
+			</button>
+
+			<button
 				class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]"
 				data-controller-attribute="generalinfo-dialog"
 				data-controller="toggleCustomValuePopup"
@@ -307,6 +334,16 @@
 				title="Đặt làm vị trí mặc định"
 			>
 				<i class="fa-solid fa-star"></i>
+			</button>
+
+			<button
+				class="w-6 h-6 md:w-8 md:h-8 border-2 border-white rounded-full text-[--color-quaternary] hover:border-[--color-secondary-light] hover:[--color-tertiary-light]"
+				data-controller-attribute=""
+				data-controller="goToForward"
+				onclick="controllMenu(this)"
+				title="Dịch chuyển đến trước mặt"
+			>
+				<i class="fa-solid fa-arrows-up-down-left-right"></i>
 			</button>
 
 			<!-- Save -->

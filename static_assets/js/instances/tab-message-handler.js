@@ -1,6 +1,6 @@
 import { loadLocations, loadScene } from "../ui/scene.js";
 import { toastMessage } from "../ui/toast.js";
-import { loadHotspots } from "../utils/hotspots.js";
+import { loadHotspots, loadPlugins } from "../utils/hotspots.js";
 import { TabMessenger } from "../utils/TabMessenger.js";
 
 window.messenger = new TabMessenger("scene");
@@ -23,6 +23,7 @@ messenger.start = function () {
 			loadScene(payload.data.scene);
 			loadLocations(payload.data.locations || []);
 			loadHotspots(payload.data.hotspots || []);
+			loadPlugins(payload.data.plugins || []);
 		}
 	});
 

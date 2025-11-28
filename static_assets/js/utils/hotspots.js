@@ -1,8 +1,13 @@
+import { createAxisEntity } from "../a-frame/axis-helper.js";
 import { getForwardPosition } from "../a-frame/camera.js";
 
 export function getInfoHotspot(id) {
-	const hotspot = document.querySelector(`a-entity[location-id='${id}']`);
-	const type = hotspot.getAttribute("location-type") || "goAHead";
+	let hotspot = document.querySelector(`a-entity[location-id='${id}']`);
+	if (!hotspot) {
+		hotspot = document.querySelector(`a-entity[plugin-id='${id}']`);
+	}
+
+	const type = hotspot.getAttribute("spot-type") || "goAHead";
 	const position = hotspot.getAttribute("position") || { x: 0, y: 0, z: 0 };
 	const rotation = hotspot.getAttribute("rotation") || { x: 0, y: 0, z: 0 };
 	const scale = hotspot.getAttribute("scale") || { x: 1, y: 1, z: 1 };
@@ -16,47 +21,6 @@ export function getInfoHotspot(id) {
 		scale,
 	};
 }
-export function changeTypeHotspot(id, newType) {
-	const documentEl = document.querySelector("a-scene");
-	const oldEl = documentEl.querySelector(`a-entity[location-id='${id}']`);
-	const hotspot = getInfoHotspot(id);
-	if (!hotspot) return false;
-
-	console.log("Old hotspot element removed:", hotspot);
-	createAxisEntity({ ...hotspot, type: newType });
-	console.log("Changed hotspot type:", id, newType);
-
-	setTimeout(() => {
-		documentEl.removeChild(oldEl);
-		setTimeout(() => {
-			findHotspot(id);
-		}, 2);
-	}, 2);
-	return true;
-}
-/**
- * Create a hotspot element
- * @param {Object} param0 - The hotspot data
- * @returns {HTMLElement} The created hotspot element
- */
-export function HotspotsElement({ id, name, imageUrl }) {
-	const li = document.createElement("li");
-	const button = document.createElement("button");
-	button.className = "w-full text-left px-2 py-1 rounded hover:bg-white/30 relative";
-	button.setAttribute("data-location-id", id);
-	button.setAttribute("onclick", `findHotspot('${id}')`);
-	const img = document.createElement("img");
-	img.src = imageUrl;
-	img.alt = name;
-	img.className = "w-full h-28 object-cover inline-block";
-	const div = document.createElement("div");
-	div.className = "bottom-1 absolute px-2 py-1 bg-[--color-primary] text-sm";
-	div.textContent = name;
-	button.appendChild(img);
-	button.appendChild(div);
-	li.appendChild(button);
-	return li;
-}
 /**
  * Find a hotspot by its ID
  * @param {string} id - The ID of the hotspot to find from scene
@@ -64,7 +28,8 @@ export function HotspotsElement({ id, name, imageUrl }) {
  */
 export function findHotspot(id) {
 	const sceneEl = document.querySelector("a-scene");
-	const hotspot = sceneEl.querySelector(`a-entity[location-id='${id}']`);
+	const hotspot =
+		sceneEl.querySelector(`a-entity[location-id='${id}']`) || sceneEl.querySelector(`a-entity[plugin-id='${id}']`);
 	const hotspotHitBox = hotspot?.querySelector("[axis-selector]");
 	const cameraEl = sceneEl.querySelector("[camera]");
 	const lookComponent = cameraEl?.components["custom-look"];
@@ -128,6 +93,53 @@ export function findHotspot(id) {
 }
 
 /**
+ * Create a hotspot element
+ * @param {Object} param0 - The hotspot data
+ * @returns {HTMLElement} The created hotspot element
+ */
+export function HotspotsElement({ id, name, imageUrl }) {
+	const li = document.createElement("li");
+	const button = document.createElement("button");
+	button.className = "w-full text-left px-2 py-1 rounded hover:bg-white/30 relative";
+	button.setAttribute("data-location-id", id);
+	button.setAttribute("onclick", `findHotspot('${id}')`);
+	const img = document.createElement("img");
+	img.src = imageUrl;
+	img.alt = name;
+	img.className = "w-full h-28 object-cover inline-block";
+	const div = document.createElement("div");
+	div.className = "bottom-1 absolute px-2 py-1 bg-[--color-primary] text-sm";
+	div.textContent = name;
+	button.appendChild(img);
+	button.appendChild(div);
+	li.appendChild(button);
+	return li;
+}
+
+/**
+ * Create a hotspot element
+ * @param {Object} param0 - The hotspot data
+ * @returns {HTMLElement} The created hotspot element
+ */
+export function HotspotsElementPlugin({ id, name, imageUrl }) {
+	const li = document.createElement("li");
+	const button = document.createElement("button");
+	button.className = "w-full text-left px-2 py-1 rounded hover:bg-white/30 relative";
+	button.setAttribute("data-location-id", id);
+	button.setAttribute("onclick", `findHotspot('${id}')`);
+	const img = document.createElement("img");
+	img.src = imageUrl || "../img/plugin.jpg";
+	img.alt = name || id;
+	img.className = "w-full h-28 object-cover inline-block";
+	const div = document.createElement("div");
+	div.className = "bottom-1 absolute px-2 py-1 bg-[--color-primary] text-sm";
+	div.textContent = name;
+	button.appendChild(img);
+	button.appendChild(div);
+	li.appendChild(button);
+	return li;
+}
+/**
  * Get all hotspots from the current A-Frame scene
  * @returns {Array} Array of hotspot objects with id, type, position, rotation, scale
  */
@@ -137,7 +149,7 @@ export const getSpotsFromScene = () => {
 	const result = [];
 	spots.forEach((spot) => {
 		const id = spot.getAttribute("location-id") || "unknown-id";
-		const type = spot.getAttribute("location-type") || "goAHead";
+		const type = spot.getAttribute("spot-type") || "goAHead";
 		const position = spot.getAttribute("position") || { x: 0, y: 0, z: 0 };
 		const rotation = spot.getAttribute("rotation") || { x: 0, y: 0, z: 0 };
 		const scale = spot.getAttribute("scale") || { x: 1, y: 1, z: 1 };
@@ -159,7 +171,7 @@ export const getPluginsFromScene = () => {
 	const result = [];
 	plugins.forEach((spot) => {
 		const id = spot.getAttribute("plugin-id") || "unknown-id";
-		const type = spot.getAttribute("plugin-type") || "goAHead";
+		const type = spot.getAttribute("spot-type") || "goAHead";
 		const position = spot.getAttribute("position") || { x: 0, y: 0, z: 0 };
 		const rotation = spot.getAttribute("rotation") || { x: 0, y: 0, z: 0 };
 		const scale = spot.getAttribute("scale") || { x: 1, y: 1, z: 1 };
@@ -234,7 +246,33 @@ export function loadHotspots(hotspots) {
 		container.appendChild(noHotspotMsg);
 	}
 }
+/**
+ * Load hotspots from array to the location list
+ * @param {Array} hotspots - Array of hotspot objects with id, name, imageUrl
+ */
+export function loadPlugins(plugins) {
+	const container = document.getElementById("plugin-list");
+	if (!container) {
+		console.error('Element with id "plugin-list" not found.');
+		return;
+	}
+	container.innerHTML = ""; // Clear existing plugins
 
+	plugins.forEach((plugin) => {
+		const hotspotElement = HotspotsElementPlugin(plugin);
+		container.appendChild(hotspotElement);
+	});
+
+	__plugins = plugins;
+
+	if (plugins.length === 0) {
+		const noPluginMsg = document.createElement("li");
+		noPluginMsg.innerHTML = `<li>
+        <p class="text-center text-white">Chưa có plugin nào được thêm vào. Vui lòng quay lại quản lý địa điểm để thêm plugin.</p>
+       </li>`;
+		container.appendChild(noPluginMsg);
+	}
+}
 /**
  * Remove all hotspot spots from the scene
  */
@@ -248,3 +286,29 @@ export function removeAllSpots() {
 	}
 	console.log("All spots removed.", { removedCount: spots.length });
 }
+
+export function changeTypeHotspot(id, newType) {
+	const documentEl = document.querySelector("a-scene");
+	let isPlugin = false;
+	let oldEl = documentEl.querySelector(`a-entity[location-id='${id}']`);
+	if (!oldEl) {
+		oldEl = documentEl.querySelector(`a-entity[plugin-id='${id}']`);
+		isPlugin = true;
+	}
+	const hotspot = getInfoHotspot(id);
+	if (!hotspot) return false;
+
+	console.log("Old hotspot element removed:", hotspot);
+	createAxisEntity({ ...hotspot, type: newType, isPlugin });
+	console.log("Changed hotspot type:", id, newType);
+
+	setTimeout(() => {
+		documentEl.removeChild(oldEl);
+		setTimeout(() => {
+			findHotspot(id);
+		}, 2);
+	}, 2);
+	return true;
+}
+
+window.findHotspot = findHotspot;

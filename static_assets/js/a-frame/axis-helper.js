@@ -13,7 +13,7 @@ export const createAxisEntity = (spot) => {
 	const type = spot.isPlugin ? "plugin" : "location";
 
 	axisHelper.setAttribute(type + "-id", spot.id || "unknown");
-	axisHelper.setAttribute(type + "-type", spot.type || "unknown");
+	axisHelper.setAttribute("spot-type", spot.type || "goAHead");
 
 	switch (spot.type) {
 		case "goAHead":

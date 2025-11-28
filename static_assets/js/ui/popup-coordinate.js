@@ -13,8 +13,14 @@ export const openCustomValuePop = () => {
  * @param {string} objId - The object id to select location for
  */
 export const selectLocationTab = (objId) => {
-	const id = document.querySelector(`#${objId}`).getAttribute("location-id");
-	const type = document.querySelector(`#${objId}`).getAttribute("location-type");
+	const checkType = document.querySelector(`#${objId}`).getAttribute("plugin-id");
+	let id = "";
+	const type = document.querySelector(`#${objId}`).getAttribute("spot-type");
+	if (!checkType) {
+		id = document.querySelector(`#${objId}`).getAttribute("location-id");
+	} else {
+		id = document.querySelector(`#${objId}`).getAttribute("plugin-id");
+	}
 	if (!id) {
 		console.warn("No current object selected.");
 		return;
@@ -91,9 +97,14 @@ export const handleTabModify = () => {
 				return;
 			}
 
-			const oldType = obj.getAttribute("location-type");
+			const checkType = obj.getAttribute("plugin-id");
+			const oldType = obj.getAttribute("spot-type");
 
-			const locationId = obj.getAttribute("location-id");
+			let locationId = obj.getAttribute("location-id");
+			if (locationId === null || locationId === undefined) {
+				locationId = obj.getAttribute("plugin-id");
+			}
+
 			if (oldType != popup.querySelector("#pop-cus-val-type-hotspot-select").value) {
 				changeTypeHotspot(locationId, popup.querySelector("#pop-cus-val-type-hotspot-select").value);
 			}
